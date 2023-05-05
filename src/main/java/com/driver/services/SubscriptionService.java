@@ -87,6 +87,7 @@ public class SubscriptionService {
 //        subscriptionRepository.save(subscription);
 //
 //        return balanceToBePaid;
+        return null;
     }
 
     public Integer calculateTotalRevenueOfHotstar(){
