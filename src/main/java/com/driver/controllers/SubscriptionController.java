@@ -18,6 +18,7 @@ public class SubscriptionController {
     @Autowired
     SubscriptionService subscriptionService;
 
+    //done
     @PostMapping("/buy")
     public Integer buySubscription(SubscriptionEntryDto subscriptionEntryDto){
 
@@ -41,6 +42,7 @@ public class SubscriptionController {
         }
     }
 
+    //done
     @GetMapping("/calculateTotalRevenue")
     public Integer getTotalRevenue(){
 
