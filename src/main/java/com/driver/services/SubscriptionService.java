@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SubscriptionService {
@@ -57,37 +58,38 @@ public class SubscriptionService {
         //If you are already at an ElITE subscription : then throw Exception ("Already the best Subscription")
         //In all other cases just try to upgrade the subscription and tell the difference of price that user has to pay
         //update the subscription in the repository
+        Optional<User> sample = userRepository.findById(userId);
+        if(!sample.isPresent()) throw new Exception(" ");
+        User user = sample.get();
 
-//        User user = userRepository.findById(userId).get();
-//
-//        int balanceToBePaid = 0;
-//        Subscription subscription = user.getSubscription();
-//
-//        if(String.valueOf(subscription.getSubscriptionType()).equals("ELITE")) throw new Exception("Already the best Subscription");
-//
-//        if(String.valueOf(subscription.getSubscriptionType()).equals("BASIC")){
-//
-//            int amountForPro = 800 + (250 * subscription.getNoOfScreensSubscribed());
-//            subscription.setSubscriptionType(SubscriptionType.PRO);
-//            subscription.setTotalAmountPaid(amountForPro);
-//
-//            balanceToBePaid = amountForPro - subscription.getTotalAmountPaid();
-//
-//        }else if(String.valueOf(subscription.getSubscriptionType()).equals("PRO")){
-//
-//            int amountForElite = 1000 + (350 * subscription.getNoOfScreensSubscribed());
-//            subscription.setSubscriptionType(SubscriptionType.ELITE);
-//            subscription.setTotalAmountPaid(amountForElite);
-//
-//            balanceToBePaid = amountForElite - subscription.getTotalAmountPaid();
-//
-//        }
-//
-//
-//        subscriptionRepository.save(subscription);
-//
-//        return balanceToBePaid;
-        return null;
+        int balanceToBePaid = 0;
+        Subscription subscription = user.getSubscription();
+
+        if(String.valueOf(subscription.getSubscriptionType()).equals("ELITE")) throw new Exception("Already the best Subscription");
+
+        if(String.valueOf(subscription.getSubscriptionType()).equals("BASIC")){
+
+            int amountForPro = 800 + (250 * subscription.getNoOfScreensSubscribed());
+            subscription.setSubscriptionType(SubscriptionType.PRO);
+            subscription.setTotalAmountPaid(amountForPro);
+
+            balanceToBePaid = amountForPro - subscription.getTotalAmountPaid();
+
+        }else if(String.valueOf(subscription.getSubscriptionType()).equals("PRO")){
+
+            int amountForElite = 1000 + (350 * subscription.getNoOfScreensSubscribed());
+            subscription.setSubscriptionType(SubscriptionType.ELITE);
+            subscription.setTotalAmountPaid(amountForElite);
+
+            balanceToBePaid = amountForElite - subscription.getTotalAmountPaid();
+
+        }
+
+
+        subscriptionRepository.save(subscription);
+
+        return balanceToBePaid;
+
     }
 
     public Integer calculateTotalRevenueOfHotstar(){
