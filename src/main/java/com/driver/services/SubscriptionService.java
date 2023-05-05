@@ -62,6 +62,13 @@ public class SubscriptionService {
 
         int balanceToBePaid = 0;
         Subscription subscription = user.getSubscription();
+        if(subscription == null){
+            int amountForPro = 500 + (200 * subscription.getNoOfScreensSubscribed());
+            subscription.setSubscriptionType(SubscriptionType.BASIC);
+            subscription.setTotalAmountPaid(amountForPro);
+
+            balanceToBePaid = amountForPro - subscription.getTotalAmountPaid();
+        }
         if(String.valueOf(subscription.getSubscriptionType()).equals("ELITE")) throw new Exception("Already the best Subscription");
 
         if(String.valueOf(subscription.getSubscriptionType()).equals("BASIC")){
