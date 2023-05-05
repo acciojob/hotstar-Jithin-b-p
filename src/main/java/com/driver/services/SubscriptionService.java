@@ -37,7 +37,7 @@ public class SubscriptionService {
             amount = 800 + (250 * subscriptionEntryDto.getNoOfScreensRequired());
 
         }else if(subtype.equals("BASIC")){
-            amount = 200 * subscriptionEntryDto.getNoOfScreensRequired();
+            amount = 500 * (200 * subscriptionEntryDto.getNoOfScreensRequired());
 
         }else if(subtype.equals("ELITE")){
             amount = 1000 + (350 * subscriptionEntryDto.getNoOfScreensRequired());
@@ -58,7 +58,34 @@ public class SubscriptionService {
         //In all other cases just try to upgrade the subscription and tell the difference of price that user has to pay
         //update the subscription in the repository
 
-        return null;
+        User user = userRepository.findById(userId).get();
+
+        int balanceToBePaid = 0;
+        Subscription subscription = user.getSubscription();
+        if(String.valueOf(subscription.getSubscriptionType()).equals("ELITE")) throw new Exception("Already the best Subscription");
+
+        if(String.valueOf(subscription.getSubscriptionType()).equals("BASIC")){
+
+            int amountForPro = 800 + (250 * subscription.getNoOfScreensSubscribed());
+            subscription.setSubscriptionType(SubscriptionType.PRO);
+
+            balanceToBePaid = amountForPro - subscription.getTotalAmountPaid();
+
+        }else if(String.valueOf(subscription.getSubscriptionType()).equals("PRO")){
+
+            int amountForElite = 1000 + (350 * subscription.getNoOfScreensSubscribed());
+            subscription.setSubscriptionType(SubscriptionType.ELITE);
+
+            balanceToBePaid = amountForElite - subscription.getTotalAmountPaid();
+
+        }
+
+        user.setSubscription(subscription);
+
+        userRepository.save(user);
+        subscriptionRepository.save(subscription);
+
+        return balanceToBePaid;
     }
 
     public Integer calculateTotalRevenueOfHotstar(){
