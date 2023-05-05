@@ -58,37 +58,28 @@ public class SubscriptionService {
         //If you are already at an ElITE subscription : then throw Exception ("Already the best Subscription")
         //In all other cases just try to upgrade the subscription and tell the difference of price that user has to pay
         //update the subscription in the repository
-        Optional<User> sample = userRepository.findById(userId);
-        if(!sample.isPresent()) throw new Exception(" ");
-        User user = sample.get();
-
-        int balanceToBePaid = 0;
+        User user = userRepository.findById(userId).get();
         Subscription subscription = user.getSubscription();
+        int amtDiffer = 0;
 
-        if(String.valueOf(subscription.getSubscriptionType()).equals("ELITE")) throw new Exception("Already the best Subscription");
+        if(subscription.getSubscriptionType()==SubscriptionType.ELITE)
+            throw new Exception("Already the best Subscription");
 
-        if(String.valueOf(subscription.getSubscriptionType()).equals("BASIC")){
-
-            int amountForPro = 800 + (250 * subscription.getNoOfScreensSubscribed());
-            subscription.setSubscriptionType(SubscriptionType.PRO);
-            subscription.setTotalAmountPaid(amountForPro);
-
-            balanceToBePaid = amountForPro - subscription.getTotalAmountPaid();
-
-        }else if(String.valueOf(subscription.getSubscriptionType()).equals("PRO")){
-
-            int amountForElite = 1000 + (350 * subscription.getNoOfScreensSubscribed());
+        else if (subscription.getSubscriptionType()==SubscriptionType.PRO) {
             subscription.setSubscriptionType(SubscriptionType.ELITE);
-            subscription.setTotalAmountPaid(amountForElite);
-
-            balanceToBePaid = amountForElite - subscription.getTotalAmountPaid();
-
+            amtDiffer = (1000 + (350*subscription.getNoOfScreensSubscribed()))-subscription.getTotalAmountPaid();
+            subscription.setTotalAmountPaid(1000 + (350*subscription.getNoOfScreensSubscribed()));
+            subscription.setStartSubscriptionDate(new Date());
+        }
+        else if (subscription.getSubscriptionType()==SubscriptionType.BASIC) {
+            subscription.setSubscriptionType(SubscriptionType.PRO);
+            amtDiffer = (800 + (250*subscription.getNoOfScreensSubscribed()))-subscription.getTotalAmountPaid();
+            subscription.setTotalAmountPaid(800 + (250*subscription.getNoOfScreensSubscribed()));
+            subscription.setStartSubscriptionDate(new Date());
         }
 
-
         subscriptionRepository.save(subscription);
-
-        return balanceToBePaid;
+        return amtDiffer;
 
     }
 
