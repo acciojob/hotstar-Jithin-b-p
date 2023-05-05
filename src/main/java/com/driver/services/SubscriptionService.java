@@ -26,31 +26,37 @@ public class SubscriptionService {
     public Integer buySubscription(SubscriptionEntryDto subscriptionEntryDto){
 
         //Save The subscription Object into the Db and return the total Amount that user has to pay
-        User user = userRepository.findById(subscriptionEntryDto.getUserId()).get();
         Subscription subscription = new Subscription();
-        subscription.setSubscriptionType(subscriptionEntryDto.getSubscriptionType());
+        User user = userRepository.findById(subscriptionEntryDto.getUserId()).get();
+
+        String s = subscriptionEntryDto.getSubscriptionType().toString();
+        int amt = 0;
+        if(s.equalsIgnoreCase("basic") || s.equalsIgnoreCase("pro") || s.equalsIgnoreCase("elite")){
+            if(s.equalsIgnoreCase("basic")){
+                subscription.setSubscriptionType(SubscriptionType.BASIC);
+                amt = 500 + (200*subscriptionEntryDto.getNoOfScreensRequired());
+                subscription.setTotalAmountPaid(amt);
+            }
+            else if(s.equalsIgnoreCase("pro")){
+                subscription.setSubscriptionType(SubscriptionType.PRO);
+                amt = 800 + (250*subscriptionEntryDto.getNoOfScreensRequired());
+                subscription.setTotalAmountPaid(amt);
+            }
+            else if(s.equalsIgnoreCase("elite")){
+                subscription.setSubscriptionType(SubscriptionType.ELITE);
+                amt = 1000 + (350*subscriptionEntryDto.getNoOfScreensRequired());
+                subscription.setTotalAmountPaid(amt);
+            }
+        }
+
+        subscription.setStartSubscriptionDate(new Date());
         subscription.setNoOfScreensSubscribed(subscriptionEntryDto.getNoOfScreensRequired());
         subscription.setUser(user);
 
-        String subtype = String.valueOf(subscriptionEntryDto.getSubscriptionType());
-        int amount = 0;
-        if(subtype.equals("PRO")){
-            amount = 800 + (250 * subscriptionEntryDto.getNoOfScreensRequired());
-
-        }else if(subtype.equals("BASIC")){
-            amount = 500 * (200 * subscriptionEntryDto.getNoOfScreensRequired());
-
-        }else if(subtype.equals("ELITE")){
-            amount = 1000 + (350 * subscriptionEntryDto.getNoOfScreensRequired());
-        }
-
-        subscription.setTotalAmountPaid(amount);
-        Subscription savedSubscription = subscriptionRepository.save(subscription);
-
-        user.setSubscription(savedSubscription);
+        user.setSubscription(subscription);
         userRepository.save(user);
 
-        return amount;
+        return amt;
     }
 
     public Integer upgradeSubscription(Integer userId)throws Exception{

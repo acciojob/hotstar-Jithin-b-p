@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ProductionHouseService {
@@ -21,6 +22,7 @@ public class ProductionHouseService {
         ProductionHouse productionHouse = new ProductionHouse();
         productionHouse.setName(productionHouseEntryDto.getName());
         productionHouse.setRatings(0);
+
         productionHouse.setWebSeriesList(new ArrayList<>());
 
         ProductionHouse savedProductionHouse = productionHouseRepository.save(productionHouse);
