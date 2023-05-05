@@ -33,12 +33,14 @@ public class SubscriptionService {
 
         String subtype = String.valueOf(subscriptionEntryDto.getSubscriptionType());
         int amount = 0;
-        if(subtype.equals("BASIC")){
+        if(subtype.equals("PRO")){
+            amount = 800 + (250 * subscriptionEntryDto.getNoOfScreensRequired());
+
+        }else if(subtype.equals("BASIC")){
             amount = 200 * subscriptionEntryDto.getNoOfScreensRequired();
-        }else if(subtype.equals("PRO")){
-            amount = 800 * subscriptionEntryDto.getNoOfScreensRequired();
+
         }else if(subtype.equals("ELITE")){
-            amount = 1000 * subscriptionEntryDto.getNoOfScreensRequired();
+            amount = 1000 + (350 * subscriptionEntryDto.getNoOfScreensRequired());
         }
 
         subscription.setTotalAmountPaid(amount);
