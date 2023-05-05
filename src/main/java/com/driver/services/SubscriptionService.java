@@ -68,6 +68,7 @@ public class SubscriptionService {
 
             int amountForPro = 800 + (250 * subscription.getNoOfScreensSubscribed());
             subscription.setSubscriptionType(SubscriptionType.PRO);
+            subscription.setTotalAmountPaid(amountForPro);
 
             balanceToBePaid = amountForPro - subscription.getTotalAmountPaid();
 
@@ -75,6 +76,7 @@ public class SubscriptionService {
 
             int amountForElite = 1000 + (350 * subscription.getNoOfScreensSubscribed());
             subscription.setSubscriptionType(SubscriptionType.ELITE);
+            subscription.setTotalAmountPaid(amountForElite);
 
             balanceToBePaid = amountForElite - subscription.getTotalAmountPaid();
 
@@ -82,7 +84,6 @@ public class SubscriptionService {
 
         user.setSubscription(subscription);
 
-        userRepository.save(user);
         subscriptionRepository.save(subscription);
 
         return balanceToBePaid;
